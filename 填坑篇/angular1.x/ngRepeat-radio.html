@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+    <meta charset="UTF-8">
+    <title>ng-repeat里面的radio取值问题</title>
+    <link rel="stylesheet" href="./bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <style type="text/css">
+        section{
+            background-color: rgb(240, 243, 241);
+            margin: 30px;
+            padding: 30px;
+
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body ng-controller="ctrl">
+    <section>
+        <ul>
+            <li ng-repeat="u in userList" >
+                <label for="">
+                    <input type="radio" ng-value="u.id" ng-model="user_id" name="user_id">
+                    <span ng-bind="u.name"></span>
+                </label>
+            </li>
+        </ul>
+        您选择的是用户是：{{user_id}}
+            <xmp>
+                <ul>
+                    <li ng-repeat="u in userList" >
+                        <label for="">
+                            <input type="radio" ng-value="u.id" ng-model="user_id" name="user_id">
+                            <span ng-bind="u.name"></span>
+                        </label>
+                    </li>
+                </ul>
+            </xmp>
+        以上的就是效果也源码，会发现无论如何都是 <b class="text-danger">取不到user_id的值</b>
+    </section>
+
+
+
+    <section class="text-success">
+          原因：处在ng-repeat之间的代码，对全局的$scope里变量的内容是不可见的，像{{u.name}}里的row，并不是全局$scope里的成员，
+        而是为ng-repeat创建的子scope里面的。所以要引用全局$scope里的成员，你可以使用 <b>$parent</b> 来引用全局的$scope。
+    </section>
+
+    <section>
+        <p>修复后：</p>
+        <ul class="list-group">
+            <li ng-repeat="u in userList" >
+                <label for="">
+                    <input type="radio" value="{{u.id}}" ng-model="$parent.user_id" name="user_id">
+                    <span ng-bind="u.name"></span>
+                </label>
+            </li>
+        </ul>
+        您选择的是用户是：{{user_id}}
+
+        <xmp>
+            <ul>
+                <li ng-repeat="u in userList" >
+                    <label for="">
+                        <input type="radio" ng-value="u.id" ng-model="$parent.user_id" name="user_id">
+                        <span ng-bind="u.name"></span>
+                    </label>
+                </li>
+            </ul>
+            您选择的是用户是：{{user_id}}
+        </xmp>
+
+        <p class="text-success">
+            现在的user_id能取到值了
+        </p>
+    </section>
+    <section>
+        <blockquote>
+            <p class="text-right">2017年第一个日出前小记一笔。</p>
+        </blockquote>
+
+    </section>
+
+    <script src="./bower_components/angular/angular.min.js"></script>
+    <script type="text/javascript">
+        var app =angular.module('app',[]);
+        app.controller('ctrl',function ($scope) {
+            $scope.userList=[
+                {
+                    name:'张三',
+                    id:1
+                },
+                {
+                    name:'李四',
+                    id:2
+                },
+                {
+                    name:'王五',
+                    id:3
+                }
+            ];
+        });
+    </script>
+</body>
+</html>
