@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>去跨域请求的页面</title>
+    </head>
+    <body>
+        <div id="color" style="border:solid 1px #333;color:#fff;">
+            <h1>
+                这里是被请求的颜色
+            </h1>
+        </div>
+
+        <div style="display:none">
+            <iframe id="child" src="http://localhost:8080/yhwlApp/mubiao.html"></iframe>
+        </div>
+
+        <script type="text/javascript">
+            window.addEventListener('message', function(e) {
+            console.log(e);
+                var color = e.data;
+                document.getElementById('color').style.backgroundColor = color;
+            }, false);
+        </script>
+    </body>
+</html>
